@@ -4,12 +4,11 @@ import "time"
 
 // Monitor Struct
 type Monitor struct {
-	URL               string        `json:"url"`
-	OutOfStockKeyword string        `json:"outOfStockKeyword"`
-	Interval          time.Duration `json:"interval"`
-	FriendlyName      string        `json:"friendlyName"`
-	Enabled           bool          `json:"enabled"`
-	ChannelID         string        `json:"channelID"`
+	URL          string        `json:"url"`
+	Interval     time.Duration `json:"interval"`
+	FriendlyName string        `json:"friendlyName"`
+	Enabled      bool          `json:"enabled"`
+	ChannelID    string        `json:"channelID"`
 }
 
 // Monitors Struct

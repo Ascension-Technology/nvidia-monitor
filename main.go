@@ -10,10 +10,10 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
-	"strings"
 	"syscall"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -74,7 +74,6 @@ func buildMonitors(s *discordgo.Session) {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
 	var monitors Monitors
-
 	json.Unmarshal(byteValue, &monitors)
 
 	// Create goroutine for each enabled monitor in configFile
@@ -108,7 +107,7 @@ func buildMonitors(s *discordgo.Session) {
 	}
 }
 
-func checkStock(monitor Monitor, s *discordgo.Session) {
+func checkStock(monitor Monitor, discord *discordgo.Session) {
 	postToDisord, err := strconv.ParseBool(os.Getenv("POST_TO_DISCORD"))
 
 	client := &http.Client{}
@@ -130,28 +129,18 @@ func checkStock(monitor Monitor, s *discordgo.Session) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	html := string(body)
-
-	if strings.Contains(html, monitor.OutOfStockKeyword) {
-		log.Printf("%s Out of Stock\n", monitor.FriendlyName)
-	} else {
-		if postToDisord {
-			s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
-		} else {
-			f, err := os.Create("instock.html")
-			if err != nil {
-				panic(err)
-			}
-			defer f.Close()
-
-			f.WriteString(html)
-
-			f.Sync()
-
-			log.Printf("%s IN STOCK!!!\n", monitor.FriendlyName)
-		}
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		log.Fatal(err)
 	}
 
+	doc.Find(".add-to-cart-button").Each(func(i int, s *goquery.Selection) {
+		buttonText := s.Text()
+
+		if buttonText == "Add to Cart" && postToDisord {
+			discord.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
+		}
+		log.Printf("-----%s-----%s", monitor.FriendlyName, buttonText)
+
+	})
 }
