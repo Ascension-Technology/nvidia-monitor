@@ -30,7 +30,7 @@ func main() {
 		return
 	}
 
-	buildMonitors()
+	buildMonitors(discord)
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
@@ -69,6 +69,7 @@ type Monitor struct {
 	Interval          time.Duration `json:"interval"`
 	FriendlyName      string        `json:"friendlyName"`
 	Enabled           bool          `json:"enabled"`
+	ChannelID         string        `json:"channelID"`
 }
 
 // Monitors Struct
@@ -76,7 +77,7 @@ type Monitors struct {
 	Monitors []Monitor `json:"monitors"`
 }
 
-func buildMonitors() {
+func buildMonitors(s *discordgo.Session) {
 	jsonFile, err := os.Open("monitors.json")
 
 	if err != nil {
@@ -112,7 +113,7 @@ func buildMonitors() {
 						fmt.Printf("Checking if %s in stock...\n", monitor.FriendlyName)
 
 						start := time.Now()
-						checkStock(monitor)
+						checkStock(monitor, s)
 						elapsed := time.Since(start)
 						fmt.Printf("Took %s to check %s stock\n", elapsed, monitor.FriendlyName)
 					case <-quit:
@@ -125,7 +126,7 @@ func buildMonitors() {
 	}
 }
 
-func checkStock(monitor Monitor) {
+func checkStock(monitor Monitor, s *discordgo.Session) {
 	client := &http.Client{}
 
 	userAgent := "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0"
@@ -150,9 +151,9 @@ func checkStock(monitor Monitor) {
 	html := string(body)
 
 	if strings.Contains(html, monitor.OutOfStockKeyword) {
-		fmt.Printf("%s Out of Stock\n", monitor.FriendlyName)
+		s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s Out of Stock\n", monitor.FriendlyName))
 	} else {
-		fmt.Printf("%s IN STOCK!!!!!!!!!\n", monitor.FriendlyName)
+		s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!!\n", monitor.FriendlyName))
 	}
 
 }
