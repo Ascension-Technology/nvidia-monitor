@@ -46,13 +46,14 @@ func main() {
 }
 
 func buildMonitors(s *discordgo.Session) {
-	jsonFile, err := os.Open("monitors.json")
+	configFile := os.Getenv("CONFIG_FILE")
+	jsonFile, err := os.Open(configFile)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	fmt.Println("Successfully Opened monitors.json")
+	fmt.Printf("Successfully Opened %s\n", configFile)
 
 	defer jsonFile.Close()
 
@@ -62,15 +63,14 @@ func buildMonitors(s *discordgo.Session) {
 
 	json.Unmarshal(byteValue, &monitors)
 
+	// Create goroutine for each enabled monitor in configFile
 	for i := 0; i < len(monitors.Monitors); i++ {
 		monitor := monitors.Monitors[i]
-		interval := monitor.Interval
-		friendlyName := monitor.FriendlyName
 
 		if monitor.Enabled {
-			fmt.Printf("Checking %s every %d seconds\n", friendlyName, interval)
+			fmt.Printf("Checking %s every %d seconds\n", monitor.FriendlyName, monitor.Interval)
 
-			ticker := time.NewTicker(interval * time.Second)
+			ticker := time.NewTicker(monitor.Interval * time.Second)
 			quit := make(chan struct{})
 
 			// check stock every n seconds
