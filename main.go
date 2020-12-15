@@ -17,9 +17,10 @@ import (
 )
 
 func main() {
+	// auth. to discord
 	discord, err := discordgo.New("Bot " + os.Getenv("ASCENSION_MONITOR_TOKEN"))
 
-	discord.AddHandler(messageCreate)
+	discord.AddHandler(pingPong)
 
 	// In this example, we only care about receiving message events.
 	discord.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
@@ -31,6 +32,7 @@ func main() {
 		return
 	}
 
+	// create scheduled tasks to monitor each item in monitors.json
 	buildMonitors(discord)
 
 	// Wait here until CTRL-C or other term signal is received.
@@ -43,9 +45,9 @@ func main() {
 	discord.Close()
 }
 
-// This function will be called (due to AddHandler above) every time a new
-// message is created on any channel that the authenticated bot has access to.
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+// This function will be called when a user sends 'ping' to any subscribed channel
+// so we can make sure the bot is responsive
+func pingPong(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// Ignore all messages created by the bot itself
 	// This isn't required in this specific example but it's a good practice.
@@ -91,7 +93,7 @@ func buildMonitors(s *discordgo.Session) {
 			ticker := time.NewTicker(interval * time.Second)
 			quit := make(chan struct{})
 
-			// check stock every 10 seconds
+			// check stock every n seconds
 			go func() {
 				for {
 					select {
