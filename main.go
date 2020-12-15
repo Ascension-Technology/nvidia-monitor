@@ -18,18 +18,6 @@ import (
 )
 
 func main() {
-	// init logger
-	f, err := os.OpenFile("text.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer f.Close()
-
-	wrt := io.MultiWriter(os.Stdout, f)
-	log.SetOutput(wrt)
-
-	log.Println("Initialized log")
-
 	// auth. to discord
 	discord, err := discordgo.New("Bot " + os.Getenv("ASCENSION_MONITOR_TOKEN"))
 
@@ -56,6 +44,19 @@ func main() {
 
 	// Cleanly close down the Discord session.
 	discord.Close()
+}
+
+func initLogger() {
+	f, err := os.OpenFile("text.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
+
+	wrt := io.MultiWriter(os.Stdout, f)
+	log.SetOutput(wrt)
+
+	log.Println("Initialized log")
 }
 
 func buildMonitors(s *discordgo.Session) {
