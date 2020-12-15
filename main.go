@@ -151,9 +151,9 @@ func checkStock(monitor Monitor, s *discordgo.Session) {
 	html := string(body)
 
 	if strings.Contains(html, monitor.OutOfStockKeyword) {
-		s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s Out of Stock\n", monitor.FriendlyName))
+		fmt.Printf("%s Out of Stock\n", monitor.FriendlyName)
 	} else {
-		s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!!\n", monitor.FriendlyName))
+		s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
 	}
 
 }
