@@ -3,14 +3,23 @@
     {
       "url": "https://www.bestbuy.com/site/nvidia-geforce-rtx-3080-10gb-gddr6x-pci-express-4-0-graphics-card-titanium-and-black/6429440.p?acampID=0&cmp=RMX&loc=Hatch&ref=198&skuId=6429440",
       "outOfStockKeyword": "<button class=\"btn btn-disabled btn-lg btn-block add-to-cart-button\" disabled=\"\" type=\"button\" data-sku-id=\"6429440\" style=\"padding:0 8px\">Sold Out</button>",
-      "interval": 10,
-      "friendlyName": "Best Buy 3080"
+      "interval": 30,
+      "friendlyName": "Best Buy 3080",
+      "enabled": false
     },
     {
       "url": "https://www.bestbuy.com/site/nvidia-geforce-rtx-3070-8gb-gddr6-pci-express-4-0-graphics-card-dark-platinum-and-black/6429442.p?skuId=6429442",
       "outOfStockKeyword": "<button class=\"btn btn-disabled btn-lg btn-block add-to-cart-button\" disabled=\"\" type=\"button\" data-sku-id=\"6429442\" style=\"padding:0 8px\">Sold Out</button>",
-      "interval": 5,
-      "friendlyName": "Best Buy 3070"
+      "interval": 30,
+      "friendlyName": "Best Buy 3070",
+      "enabled": false
+    },
+    {
+      "url": "https://www.bestbuy.com/site/pokemon-trading-card-game-hidden-fates-tin-styles-may-vary/6366740.p?skuId=6366740",
+      "outOfStockKeyword": "<button class=\"btn btn-disabled btn-lg btn-block add-to-cart-button\" disabled=\"\" type=\"button\" data-sku-id=\"6366740\" style=\"padding:0 8px\">Sold Out</button>",
+      "interval": 120,
+      "friendlyName": "Best Buy Hidden Fates Tin",
+      "enabled": true
     }
   ]
 }

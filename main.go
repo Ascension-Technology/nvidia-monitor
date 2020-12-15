@@ -68,6 +68,7 @@ type Monitor struct {
 	OutOfStockKeyword string        `json:"outOfStockKeyword"`
 	Interval          time.Duration `json:"interval"`
 	FriendlyName      string        `json:"friendlyName"`
+	Enabled           bool          `json:"enabled"`
 }
 
 // Monitors Struct
@@ -97,29 +98,30 @@ func buildMonitors() {
 		interval := monitor.Interval
 		friendlyName := monitor.FriendlyName
 
-		fmt.Printf("Checking %s every %d seconds\n", friendlyName, interval)
+		if monitor.Enabled {
+			fmt.Printf("Checking %s every %d seconds\n", friendlyName, interval)
 
-		ticker := time.NewTicker(interval * time.Second)
-		quit := make(chan struct{})
+			ticker := time.NewTicker(interval * time.Second)
+			quit := make(chan struct{})
 
-		// check stock every 10 seconds
-		go func() {
-			for {
-				select {
-				case <-ticker.C:
-					fmt.Printf("Checking if %s in stock...\n", monitor.FriendlyName)
+			// check stock every 10 seconds
+			go func() {
+				for {
+					select {
+					case <-ticker.C:
+						fmt.Printf("Checking if %s in stock...\n", monitor.FriendlyName)
 
-					start := time.Now()
-					checkStock(monitor)
-					elapsed := time.Since(start)
-					fmt.Printf("Took %s to check %s stock\n", elapsed, monitor.FriendlyName)
-				case <-quit:
-					ticker.Stop()
-					return
+						start := time.Now()
+						checkStock(monitor)
+						elapsed := time.Since(start)
+						fmt.Printf("Took %s to check %s stock\n", elapsed, monitor.FriendlyName)
+					case <-quit:
+						ticker.Stop()
+						return
+					}
 				}
-			}
-		}()
-
+			}()
+		}
 	}
 }
 
