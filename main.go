@@ -63,21 +63,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-// Monitor Struct
-type Monitor struct {
-	URL               string        `json:"url"`
-	OutOfStockKeyword string        `json:"outOfStockKeyword"`
-	Interval          time.Duration `json:"interval"`
-	FriendlyName      string        `json:"friendlyName"`
-	Enabled           bool          `json:"enabled"`
-	ChannelID         string        `json:"channelID"`
-}
-
-// Monitors Struct
-type Monitors struct {
-	Monitors []Monitor `json:"monitors"`
-}
-
 func buildMonitors(s *discordgo.Session) {
 	jsonFile, err := os.Open("monitors.json")
 
