@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +18,18 @@ import (
 )
 
 func main() {
+	// init logger
+	f, err := os.OpenFile("text.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
+
+	wrt := io.MultiWriter(os.Stdout, f)
+	log.SetOutput(wrt)
+
+	log.Println("Initialized log")
+
 	// auth. to discord
 	discord, err := discordgo.New("Bot " + os.Getenv("ASCENSION_MONITOR_TOKEN"))
 
@@ -28,7 +41,7 @@ func main() {
 	// Open a websocket connection to Discord and begin listening.
 	err = discord.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
+		log.Fatalln("error opening connection,", err)
 		return
 	}
 
@@ -36,7 +49,7 @@ func main() {
 	buildMonitors(discord)
 
 	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	log.Println("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
@@ -53,7 +66,7 @@ func buildMonitors(s *discordgo.Session) {
 		log.Fatalln(err)
 	}
 
-	fmt.Printf("Successfully Opened %s\n", configFile)
+	log.Printf("Successfully Opened %s\n", configFile)
 
 	defer jsonFile.Close()
 
@@ -68,7 +81,7 @@ func buildMonitors(s *discordgo.Session) {
 		monitor := monitors.Monitors[i]
 
 		if monitor.Enabled {
-			fmt.Printf("Checking %s every %d seconds\n", monitor.FriendlyName, monitor.Interval)
+			log.Printf("Checking %s every %d seconds\n", monitor.FriendlyName, monitor.Interval)
 
 			ticker := time.NewTicker(monitor.Interval * time.Second)
 			quit := make(chan struct{})
@@ -78,12 +91,12 @@ func buildMonitors(s *discordgo.Session) {
 				for {
 					select {
 					case <-ticker.C:
-						fmt.Printf("Checking if %s in stock...\n", monitor.FriendlyName)
+						log.Printf("Checking if %s in stock...\n", monitor.FriendlyName)
 
 						start := time.Now()
 						checkStock(monitor, s)
 						elapsed := time.Since(start)
-						fmt.Printf("Took %s to check %s stock\n", elapsed, monitor.FriendlyName)
+						log.Printf("Took %s to check %s stock\n", elapsed, monitor.FriendlyName)
 					case <-quit:
 						ticker.Stop()
 						return
@@ -121,7 +134,7 @@ func checkStock(monitor Monitor, s *discordgo.Session) {
 	html := string(body)
 
 	if strings.Contains(html, monitor.OutOfStockKeyword) {
-		fmt.Printf("%s Out of Stock\n", monitor.FriendlyName)
+		log.Printf("%s Out of Stock\n", monitor.FriendlyName)
 	} else {
 		if postToDisord {
 			s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
@@ -136,7 +149,7 @@ func checkStock(monitor Monitor, s *discordgo.Session) {
 
 			f.Sync()
 
-			fmt.Printf("%s IN STOCK!!!\n", monitor.FriendlyName)
+			log.Printf("%s IN STOCK!!!\n", monitor.FriendlyName)
 		}
 	}
 
