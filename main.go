@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -127,6 +128,8 @@ func buildMonitors(s *discordgo.Session) {
 }
 
 func checkStock(monitor Monitor, s *discordgo.Session) {
+	postToDisord, err := strconv.ParseBool(os.Getenv("POST_TO_DISCORD"))
+
 	client := &http.Client{}
 
 	userAgent := "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0"
@@ -153,7 +156,21 @@ func checkStock(monitor Monitor, s *discordgo.Session) {
 	if strings.Contains(html, monitor.OutOfStockKeyword) {
 		fmt.Printf("%s Out of Stock\n", monitor.FriendlyName)
 	} else {
-		s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
+		if postToDisord {
+			s.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
+		} else {
+			f, err := os.Create("instock.html")
+			if err != nil {
+				panic(err)
+			}
+			defer f.Close()
+
+			f.WriteString(html)
+
+			f.Sync()
+
+			fmt.Printf("%s IN STOCK!!!\n", monitor.FriendlyName)
+		}
 	}
 
 }
