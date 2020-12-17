@@ -17,6 +17,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var createdEmbeds []*discordgo.Message
+
 func main() {
 	// auth. to discord
 	discord, err := discordgo.New("Bot " + os.Getenv("ASCENSION_MONITOR_TOKEN"))
@@ -41,6 +43,14 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+
+	// clean up embeds on exit to not clutter the channels
+	for _, embed := range createdEmbeds {
+		err := discord.ChannelMessageDelete(embed.ChannelID, embed.ID)
+		if err != nil {
+			log.Printf("Error deleting embed in channel %s: %v", embed.ChannelID, err)
+		}
+	}
 
 	// Cleanly close down the Discord session.
 	discord.Close()
@@ -85,7 +95,11 @@ func buildMonitors(s *discordgo.Session) {
 			log.Printf("Checking %s every %d seconds\n", monitor.FriendlyName, monitor.Interval)
 
 			if postToDisord {
-				s.ChannelMessageSendEmbed(monitor.ChannelID, NewGenericEmbed(monitor.FriendlyName, fmt.Sprintf("Checking [%s](%s) stock every %d seconds\n", monitor.FriendlyName, monitor.URL, monitor.Interval)))
+				embed, err := s.ChannelMessageSendEmbed(monitor.ChannelID, NewGenericEmbed(monitor.FriendlyName, fmt.Sprintf("Checking [%s](%s) stock every %d seconds\n", monitor.FriendlyName, monitor.URL, monitor.Interval)))
+				if err != nil {
+					log.Printf("Error creating alert embed for %s", monitor.FriendlyName)
+				}
+				createdEmbeds = append(createdEmbeds, embed)
 			}
 
 			ticker := time.NewTicker(monitor.Interval * time.Second)
