@@ -62,6 +62,7 @@ func initLogger() {
 func buildMonitors(s *discordgo.Session) {
 	configFile := os.Getenv("CONFIG_FILE")
 	jsonFile, err := os.Open(configFile)
+	postToDisord, err := strconv.ParseBool(os.Getenv("POST_TO_DISCORD"))
 
 	if err != nil {
 		log.Fatalln(err)
@@ -82,6 +83,10 @@ func buildMonitors(s *discordgo.Session) {
 
 		if monitor.Enabled {
 			log.Printf("Checking %s every %d seconds\n", monitor.FriendlyName, monitor.Interval)
+
+			if postToDisord {
+				s.ChannelMessageSendEmbed(monitor.ChannelID, NewGenericEmbed(monitor.FriendlyName, fmt.Sprintf("Checking [%s](%s) stock every %d seconds\n", monitor.FriendlyName, monitor.URL, monitor.Interval)))
+			}
 
 			ticker := time.NewTicker(monitor.Interval * time.Second)
 			quit := make(chan struct{})
