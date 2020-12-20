@@ -154,9 +154,10 @@ func checkStock(monitor Monitor, discord *discordgo.Session) {
 	}
 
 	doc.Find(".add-to-cart-button").Each(func(i int, s *goquery.Selection) {
+	doc.Find(monitor.Keywords.Selector).Each(func(i int, s *goquery.Selection) {
 		buttonText := s.Text()
 
-		if buttonText == "Add to Cart" && postToDisord {
+		if (buttonText == monitor.Keywords.Positive || buttonText == "See Details") && postToDisord {
 			discord.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
 		}
 		log.Printf("-----%s-----%s", monitor.FriendlyName, buttonText)
