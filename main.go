@@ -153,7 +153,6 @@ func checkStock(monitor Monitor, discord *discordgo.Session) {
 		log.Fatal(err)
 	}
 
-	doc.Find(".add-to-cart-button").Each(func(i int, s *goquery.Selection) {
 	doc.Find(monitor.Keywords.Selector).Each(func(i int, s *goquery.Selection) {
 		buttonText := s.Text()
 
