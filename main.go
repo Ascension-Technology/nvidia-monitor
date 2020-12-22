@@ -23,7 +23,7 @@ func main() {
 	// auth. to discord
 	discord, err := discordgo.New("Bot " + os.Getenv("ASCENSION_MONITOR_TOKEN"))
 
-	discord.AddHandler(pingPong)
+	discord.AddHandler(PingPong)
 
 	// In this example, we only care about receiving message events.
 	discord.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
