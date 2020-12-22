@@ -11,7 +11,7 @@
         "negative": "Sold Out",
         "selector": ".add-to-cart-button",
         "skuSelector": ".sku .product-data-value",
-        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "priceSelector": ".priceView-hero-price span[aria-hidden='true']",
         "typeSelector": ""
       }
     },
@@ -26,7 +26,7 @@
         "negative": "Sold Out",
         "selector": ".add-to-cart-button",
         "skuSelector": ".sku .product-data-value",
-        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "priceSelector": ".priceView-hero-price span[aria-hidden='true']",
         "typeSelector": ""
       }
     },
@@ -41,7 +41,7 @@
         "negative": "Sold Out",
         "selector": ".add-to-cart-button",
         "skuSelector": ".sku .product-data-value",
-        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "priceSelector": ".priceView-hero-price span[aria-hidden='true']",
         "typeSelector": ""
       }
     },
@@ -56,7 +56,7 @@
         "negative": "Sold Out",
         "selector": ".add-to-cart-button",
         "skuSelector": ".sku .product-data-value",
-        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "priceSelector": ".priceView-hero-price span[aria-hidden='true']",
         "typeSelector": ""
       }
     },
