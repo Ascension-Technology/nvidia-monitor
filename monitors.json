@@ -65,7 +65,7 @@
       "interval": 5,
       "friendlyName": "UltraPro Penny Sleeves",
       "enabled": true,
-      "channelID": "788268078601207831",
+      "channelID": "790323014982041600",
       "keywords": {
         "positive": "Add to cart",
         "negative": "Sold Out",
@@ -80,7 +80,22 @@
       "interval": 5,
       "friendlyName": "UltraPro Eclipse Gloss Standard Sleeves",
       "enabled": true,
-      "channelID": "790326433788461086",
+      "channelID": "790323014982041600",
+      "keywords": {
+        "positive": "Add to cart",
+        "negative": "Sold Out",
+        "selector": ".product-form__add-button",
+        "skuSelector": ".product-meta__sku-number",
+        "priceSelector": ".price",
+        "typeSelector": ""
+      }
+    },
+    {
+      "url": "https://shop.ultrapro.com/products/43000?_pos=18&_sid=a7b67b156&_ss=r",
+      "interval": 5,
+      "friendlyName": "UltraPro 1/2\" Lip Tall Sleeves",
+      "enabled": true,
+      "channelID": "790323014982041600",
       "keywords": {
         "positive": "Add to cart",
         "negative": "Sold Out",
@@ -92,4 +107,3 @@
     }
   ]
 }
-
