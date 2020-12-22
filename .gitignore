@@ -16,3 +16,6 @@
 
 # environment variables
 .env
+
+# local version of items to track
+monitors-local.json
