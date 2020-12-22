@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -157,9 +158,70 @@ func checkStock(monitor Monitor, discord *discordgo.Session) {
 		buttonText := s.Text()
 
 		if (buttonText == monitor.Keywords.Positive || buttonText == "See Details") && postToDisord {
-			discord.ChannelMessageSend(monitor.ChannelID, fmt.Sprintf("%s IN STOCK!!!!!!!!! %s\n", monitor.FriendlyName, monitor.URL))
+			successEmbed := buildSuccessEmbed(doc, monitor)
+
+			discord.ChannelMessageSendEmbed(monitor.ChannelID, &successEmbed)
 		}
 		log.Printf("-----%s-----%s", monitor.FriendlyName, buttonText)
 
 	})
+}
+
+func buildSuccessEmbed(doc *goquery.Document, monitor Monitor) discordgo.MessageEmbed {
+	var embed discordgo.MessageEmbed
+
+	embed.Type = discordgo.EmbedTypeRich
+	embed.URL = monitor.URL
+	embed.Title = monitor.FriendlyName
+
+	// build custom embed fields
+	var skuValue string
+	var priceValue string
+	var typeValue string
+
+	skuValue = "SKU Not Found"
+	priceValue = "Price Not Found"
+	typeValue = "Online"
+
+	if monitor.Keywords.SKUSelector != "" {
+		doc.Find(monitor.Keywords.SKUSelector).Each(func(i int, s *goquery.Selection) {
+			skuValue = s.Text()
+		})
+	}
+
+	if monitor.Keywords.PriceSelector != "" {
+		doc.Find(monitor.Keywords.PriceSelector).Each(func(i int, s *goquery.Selection) {
+			priceValue = s.Text()[strings.Index(s.Text(), "$"):]
+		})
+	}
+
+	if monitor.Keywords.TypeSelector != "" {
+		doc.Find(monitor.Keywords.TypeSelector).Each(func(i int, s *goquery.Selection) {
+			typeValue = s.Text()
+		})
+	}
+
+	priceField := discordgo.MessageEmbedField{
+		Name:   "Price",
+		Value:  priceValue,
+		Inline: true,
+	}
+
+	skuField := discordgo.MessageEmbedField{
+		Name:   "SKU",
+		Value:  skuValue,
+		Inline: true,
+	}
+
+	typeField := discordgo.MessageEmbedField{
+		Name:   "Type",
+		Value:  typeValue,
+		Inline: true,
+	}
+
+	embed.Fields = append(embed.Fields, &priceField)
+	embed.Fields = append(embed.Fields, &skuField)
+	embed.Fields = append(embed.Fields, &typeField)
+
+	return embed
 }

@@ -19,7 +19,10 @@ type Monitors struct {
 
 // Keywords struct -- how we dynamically check stock on several sites
 type Keywords struct {
-	Positive string `json:"positive"`
-	Negative string `json:"negative"`
-	Selector string `json:"selector"`
+	Positive      string `json:"positive"`
+	Negative      string `json:"negative"`
+	Selector      string `json:"selector"`
+	SKUSelector   string `json:"skuSelector"`
+	PriceSelector string `json:"priceSelector"`
+	TypeSelector  string `json:"typeSelector"`
 }
