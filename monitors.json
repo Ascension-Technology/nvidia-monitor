@@ -9,7 +9,10 @@
       "keywords": {
         "positive": "Add to Cart",
         "negative": "Sold Out",
-        "selector": ".add-to-cart-button"
+        "selector": ".add-to-cart-button",
+        "skuSelector": ".sku .product-data-value",
+        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "typeSelector": ""
       }
     },
     {
@@ -21,7 +24,10 @@
       "keywords": {
         "positive": "Add to Cart",
         "negative": "Sold Out",
-        "selector": ".add-to-cart-button"
+        "selector": ".add-to-cart-button",
+        "skuSelector": ".sku .product-data-value",
+        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "typeSelector": ""
       }
     },
     {
@@ -33,7 +39,10 @@
       "keywords": {
         "positive": "Add to Cart",
         "negative": "Sold Out",
-        "selector": ".add-to-cart-button"
+        "selector": ".add-to-cart-button",
+        "skuSelector": ".sku .product-data-value",
+        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "typeSelector": ""
       }
     },
     {
@@ -45,7 +54,10 @@
       "keywords": {
         "positive": "Add to Cart",
         "negative": "Sold Out",
-        "selector": ".add-to-cart-button"
+        "selector": ".add-to-cart-button",
+        "skuSelector": ".sku .product-data-value",
+        "priceSelector": ".priceView-hero-price .priceView-customer-price span",
+        "typeSelector": ""
       }
     },
     {
@@ -55,9 +67,27 @@
       "enabled": true,
       "channelID": "788268078601207831",
       "keywords": {
-        "positive": "Add to Cart",
+        "positive": "Add to cart",
         "negative": "Sold Out",
-        "selector": ".product-form__add-button"
+        "selector": ".product-form__add-button",
+        "skuSelector": ".product-meta__sku-number",
+        "priceSelector": ".price",
+        "typeSelector": ""
+      }
+    },
+    {
+      "url": "https://shop.ultrapro.com/collections/eclipse-gloss/products/eclipse-gloss-sleeves",
+      "interval": 5,
+      "friendlyName": "UltraPro Eclipse Gloss Standard Sleeves",
+      "enabled": true,
+      "channelID": "790326433788461086",
+      "keywords": {
+        "positive": "Add to cart",
+        "negative": "Sold Out",
+        "selector": ".product-form__add-button",
+        "skuSelector": ".product-meta__sku-number",
+        "priceSelector": ".price",
+        "typeSelector": ""
       }
     }
   ]
