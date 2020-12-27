@@ -137,7 +137,7 @@ func checkStock(monitor Monitor, discord *discordgo.Session) {
 	req, err := http.NewRequest("GET", monitor.URL, nil)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	req.Header.Set("User-Agent", userAgent)
@@ -145,13 +145,13 @@ func checkStock(monitor Monitor, discord *discordgo.Session) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	defer resp.Body.Close()
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	doc.Find(monitor.Keywords.Selector).Each(func(i int, s *goquery.Selection) {
